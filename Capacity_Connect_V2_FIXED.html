@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Capacity Connect — Combined Platform</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.top{background:#123b68;color:#fff;padding:8px 7%;font-size:13px}.topin{display:flex;justify-content:space-between}
+header{background:#fff;padding:18px 7%;border-bottom:1px solid #ddd}.brand{display:flex;align-items:center;gap:14px}.logo{width:52px;height:52px;border:2px solid #123b68;border-radius:50%;display:grid;place-items:center;color:#123b68;font-size:10px;font-weight:bold;text-align:center}.brand h1{margin:0;color:#123b68;font-size:24px}.brand p{margin:4px 0 0;color:#667085;font-size:12px}
+nav{background:#174879;padding:0 7%}.navin{display:flex;justify-content:space-between;align-items:center}.navlinks{display:flex;gap:28px}.navlinks a{color:#fff;text-decoration:none;padding:15px 0;font-size:14px}.signin{background:#f3c75f;color:#172033;padding:10px 18px;border-radius:5px;font-weight:bold;border:0}
+.hero{padding:65px 7%}.heroGrid{max-width:1100px;margin:auto;display:grid;grid-template-columns:1.2fr .8fr;gap:45px;align-items:center}.badge{display:inline-block;background:#e8f0f8;color:#174879;padding:7px 10px;font-size:11px;font-weight:bold}.hero h2{font-size:44px;line-height:1.12;color:#123b68;margin:18px 0}.hero h2 span{color:#174879}.hero p{color:#667085;line-height:1.7;font-size:15px}.heroCard,.card{background:#fff;border:1px solid #dce2e8;border-radius:9px;padding:24px}
+.heroStat{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eee;font-size:14px}.heroStat:last-child{border:0}.heroStat b{color:#174879}
+.section{padding:55px 7%}.sectionTitle{text-align:center;margin-bottom:30px}.sectionTitle h2{color:#174879;margin:0 0 8px}.sectionTitle p{color:#667085}.roles,.features{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.role{text-align:center}.role .icon{font-size:40px}.role h3,.feature h3{color:#174879}.role p,.feature p{color:#667085;font-size:13px;line-height:1.6}.primary{width:100%;padding:12px;background:#174879;color:#fff;border:0;border-radius:5px;font-weight:bold}
+.ai{background:#fff}.aiBox{max-width:1050px;margin:auto;background:#f1f6fb;border:1px solid #cfdae7;border-radius:10px;padding:25px}.aiInput{display:flex;background:#fff;border:1px solid #ccd5df;border-radius:7px;padding:5px}.aiInput input{flex:1;border:0;outline:0;padding:12px}.aiInput button{background:#174879;color:#fff;border:0;padding:0 20px;border-radius:5px}
+footer{background:#102f50;color:#fff;padding:35px 7%;text-align:center;font-size:12px}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.modalBox{background:#fff;width:100%;max-width:430px;padding:28px;border-radius:9px;position:relative}.close{position:absolute;right:14px;top:8px;border:0;background:none;font-size:25px;color:#777}.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #ccd5df;border-radius:5px}.roleSelect{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}.roleSelect button{padding:10px;border:1px solid #ccd5df;background:#fff;border-radius:5px}.roleSelect button.active{background:#174879;color:#fff;border-color:#174879}
+#app{min-height:100vh}.appbar{background:#123b68;color:#fff;padding:13px 5%;display:flex;justify-content:space-between;align-items:center}.appbar b{font-size:19px}.logout{background:#f3c75f;border:0;padding:8px 13px;border-radius:5px}.layout{display:flex;min-height:calc(100vh - 58px)}.sidebar{width:235px;background:#fff;border-right:1px solid #ddd;padding:20px 12px}.sideTitle{font-size:11px;color:#98a2b3;margin:8px 10px}.side button{width:100%;text-align:left;background:none;border:0;padding:11px 12px;border-radius:5px;color:#344054}.side button.active,.side button:hover{background:#eaf1f8;color:#174879;font-weight:bold}.main{flex:1;padding:28px 4%;overflow:auto}.pageTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.pageTitle h2{margin:0;color:#174879}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.metric{background:#fff;border:1px solid #dce2e8;border-radius:8px;padding:18px}.metric small{color:#667085}.metric strong{display:block;font-size:27px;color:#174879;margin-top:8px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px}.list{list-style:none;padding:0;margin:0}.list li{padding:13px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:10px;align-items:center}.btn{border:1px solid #ccd5df;background:#fff;color:#174879;padding:9px 13px;border-radius:5px}.btn.fill{background:#174879;color:#fff;border-color:#174879}.btn.danger{color:#a33;background:#fff1f1;border-color:#e8bcbc}.tag,.status,.badge{display:inline-block;padding:5px 8px;border-radius:4px;background:#eef3f8;color:#174879;font-size:11px}.status.pending{background:#fff6df;color:#8a6200}.status.approved,.badge.green{background:#e8f7ee;color:#167044}.status.rejected{background:#fdecec;color:#a33}.empty{padding:30px;text-align:center;color:#667085;background:#fff;border:1px dashed #ccd5df;border-radius:8px}.notice{background:#eef6ff;border-left:4px solid #174879;padding:12px;margin:15px 0;color:#344054}.item{padding:14px 0;border-bottom:1px solid #eee}.item:last-child{border-bottom:0}.item p{color:#667085;margin:7px 0 0;font-size:13px}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px;border-bottom:1px solid #eee;font-size:13px;vertical-align:top}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.formgrid .full{grid-column:1/-1}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.kpi{background:#f8fafc;padding:18px;border-radius:7px;text-align:center}.kpi b{display:block;font-size:25px;color:#174879}.kpi span{font-size:12px;color:#667085}.barrow{margin:16px 0}.barlabel{display:flex;justify-content:space-between;font-size:13px}.barbg{height:9px;background:#e6ebf0;border-radius:10px;margin-top:7px}.bar{height:9px;background:#174879;border-radius:10px}.toast{position:fixed;right:20px;bottom:20px;background:#123b68;color:#fff;padding:12px 16px;border-radius:6px;display:none;z-index:200}
+@media(max-width:850px){.heroGrid,.roles,.features,.grid4,.grid2{grid-template-columns:1fr}.layout{display:block}.sidebar{width:100%;padding:10px}.side{display:flex;overflow:auto}.sideTitle{display:none}.side button{min-width:max-content}.navlinks{display:none}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}}
+
+.courseGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.courseCard{background:#fff;border:1px solid #dce2e8;border-radius:9px;padding:20px}
+.courseCard h3{color:#174879;margin:0 0 8px}
+.courseActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.freeTag{display:inline-block;background:#e8f7ee;color:#167044;padding:5px 9px;border-radius:4px;font-size:11px;font-weight:bold}
+.liveCard{border:1px solid #e5bcbc;background:#fff8f8;border-radius:8px;padding:16px;margin:10px 0}
+.liveDot{color:#b42318;font-weight:bold}
+.lessonCard,.noteCard{border:1px solid #dce2e8;border-radius:8px;padding:14px;margin:10px 0;background:#fff}
+.accountLink{text-align:center;margin-top:14px;font-size:13px;color:#667085}
+.accountLink button{border:0;background:none;color:#174879;font-weight:bold;padding:0}
+@media(max-width:850px){.courseGrid{grid-template-columns:1fr}}
+.authLink{border:0;background:none;color:#174879;font-weight:bold;padding:0;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="landing">
+  <div class="top"><div class="topin"><span>Digital Capacity Building & Learning Management Portal</span><span>English | हिन्दी</span></div></div>
+  <header><div class="brand"><div class="logo">GOV<br>PORTAL</div><div><h1>Capacity Connect</h1><p>Digital Capacity Building & Learning Management Portal</p></div></div></header>
+  <nav><div class="navin"><div class="navlinks"><a href="#home">Home</a><a href="#ai">Capacity AI</a><a href="#access">Login</a><a href="#services">Services</a></div><button class="signin" onclick="openLogin()">Sign In</button></div></nav>
+  <section class="hero" id="home"><div class="heroGrid"><div><span class="badge">DIGITAL CAPACITY BUILDING PLATFORM</span><h2>Learn. Build <span>Competencies.</span> Serve Better.</h2><p>Capacity Connect is a centralized digital platform for training, competency development, learning resources and performance monitoring.</p></div><div class="heroCard"><h3 style="color:#174879">Portal at a Glance</h3><div class="heroStat"><span>Learning Resources</span><b>Centralized</b></div><div class="heroStat"><span>Digital Assessments</span><b>Available</b></div><div class="heroStat"><span>Competency Mapping</span><b>Enabled</b></div><div class="heroStat"><span>Role-Based Access</span><b>3 Roles</b></div></div></div></section>
+  <section class="section ai" id="ai"><div class="aiBox"><h2 style="color:#174879;margin-top:0">Capacity AI</h2><p class="muted">Learning and training assistant</p><div class="aiInput"><input id="aiText" placeholder="Ask about courses, skills or assessments"><button onclick="askAI()">Ask AI</button></div></div></section>
+  <section class="section" id="access"><div class="sectionTitle"><h2>Access Capacity Connect</h2><p>Select your role to access the appropriate workspace.</p></div><div class="roles">
+    <div class="card role"><div class="icon">👨‍🎓</div><h3>Trainee</h3><p>Courses, learning resources, MCQ assessments, questionnaires and progress.</p><button class="primary" onclick="openLogin()">Trainee Login</button></div>
+    <div class="card role"><div class="icon">👨‍🏫</div><h3>Trainer</h3><p>Create courses, upload resources, create assessments and monitor participants.</p><button class="primary" onclick="openLogin()">Trainer Login</button></div>
+    <div class="card role"><div class="icon">🛡️</div><h3>Administrator</h3><p>Approve users, manage roles, monitor platform activity and publish announcements.</p><button class="primary" onclick="openLogin()">Admin Login</button></div>
+  </div></section>
+  <section class="section" id="services"><div class="sectionTitle"><h2>Key Portal Services</h2></div><div class="features">
+    <div class="card feature"><h3>Digital Learning</h3><p>Courses, recorded lectures, PDFs, presentations and study materials.</p></div>
+    <div class="card feature"><h3>Assessments</h3><p>Chapter/topic MCQ assessments and trainer-created questionnaires.</p></div>
+    <div class="card feature"><h3>Performance</h3><p>Participant progress, assessment performance and participation monitoring.</p></div>
+  </div></section>
+  <footer>Capacity Connect — Hackathon Prototype © 2026</footer>
+</div>
+
+<div id="loginModal" class="modal"><div class="modalBox">
+<button class="close" onclick="closeLogin()">×</button>
+<div id="loginPanel">
+<h2 style="color:#174879">Login</h2>
+<p style="color:#667085">Use the same email and password you used to create your account.</p>
+<div class="field"><label>Email Address</label><input id="loginUser" type="email" autocomplete="email" placeholder="Enter your email"></div>
+<div class="field"><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
+<button class="primary" onclick="doLogin()">Login</button>
+<div style="text-align:center;margin-top:13px"><button class="authLink" onclick="showForgot()">Forgot Password?</button></div>
+<div class="accountLink">Don't have an account? <button onclick="showSignup()">Create Account</button></div>
+</div>
+<div id="signupPanel" class="hidden">
+<h2 style="color:#174879">Create Account</h2>
+<p style="color:#667085">Create your account first. Then use the same email and password to login.</p>
+<div class="field"><label>Full Name</label><input id="signupName" placeholder="Enter full name"></div>
+<div class="field"><label>Email Address</label><input id="signupEmail" type="email" autocomplete="email" placeholder="Enter email"></div>
+<div class="field"><label>Password</label><input id="signupPass" type="password" autocomplete="new-password" placeholder="Create password"></div>
+<div class="field"><label>Confirm Password</label><input id="signupConfirm" type="password" autocomplete="new-password" placeholder="Confirm password"></div>
+<div class="field"><label>Account Type</label><select id="signupRole"><option value="trainee">Trainee</option><option value="trainer">Trainer</option></select></div>
+<button class="primary" onclick="createAccount()">Create Account</button>
+<div class="accountLink">Already have an account? <button onclick="showLogin()">Login</button></div>
+</div>
+<div id="forgotPanel" class="hidden">
+<h2 style="color:#174879">Forgot Password</h2>
+<p style="color:#667085">Enter the email used for your account.</p>
+<div class="field"><label>Email Address</label><input id="forgotEmail" type="email" autocomplete="email" placeholder="Registered email"></div>
+<button class="primary" onclick="resetPassword()">Continue</button>
+<div class="accountLink"><button onclick="showLogin()">Back to Login</button></div>
+</div>
+<div id="resetPanel" class="hidden">
+<h2 style="color:#174879">Set New Password</h2>
+<p id="resetInfo" style="color:#667085"></p>
+<div class="field"><label>New Password</label><input id="newPass" type="password" autocomplete="new-password" placeholder="New password"></div>
+<div class="field"><label>Confirm New Password</label><input id="newPassConfirm" type="password" autocomplete="new-password" placeholder="Confirm new password"></div>
+<button class="primary" onclick="saveNewPassword()">Save New Password</button>
+</div>
+</div></div>
+<div id="app" class="hidden"><div class="appbar"><b>Capacity Connect</b><div><span id="userRole"></span> &nbsp; <button class="logout" onclick="logout()">Logout</button></div></div><div class="layout"><aside class="sidebar"><div id="side" class="side"></div></aside><main class="main" id="main"></main></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY="capacityConnectStandaloneSaved_v1";
+const EMBEDDED_INITIAL_STATE={"users":[{"id":1,"name":"admin","email":"admin@capacityconnect.local","password":"admin123","role":"Admin","status":"Approved","enrolled":[],"completed":[],"attempted":[],"passed":0,"progress":0,"certifications":0,"courseProgress":{}}],"courses":[],"resources":[],"assessments":[],"questionnaires":[],"feedback":[],"announcements":[],"activity":[],"sessions":[]};
+let db=JSON.parse(localStorage.getItem(KEY)||"null")||JSON.parse(JSON.stringify(EMBEDDED_INITIAL_STATE));
+let serverReady=Promise.resolve(true);
+
+function save(){ localStorage.setItem(KEY,JSON.stringify(db)); }
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",1800);}
+let current={role:"trainee",name:"",page:"dashboard"};
+
+const menus={
+ trainee:["dashboard","profile","courses","resources","mcq","questionnaires","feedback"],
+ trainer:["dashboard","profile","participants","questionnaires","library","feedback"],
+ admin:["dashboard","users","courses","monitoring","assessments","publish","feedback"]
+};
+const labels={dashboard:"Dashboard",profile:"Manage Profile",courses:"Enroll in Courses",resources:"Learning Resources",mcq:"MCQ Assessment",questionnaires:"Questionnaires",feedback:"Feedback / Help",participants:"Participants & Performance",library:"Training Library",users:"User Approval & Roles",monitoring:"Monitoring",assessments:"Assessments",publish:"Publish & Announce"};
+
+function openLogin(){document.getElementById("loginModal").style.display="flex";showLogin()}
+function closeLogin(){document.getElementById("loginModal").style.display="none"}
+function chooseRole(role){current.role=role;["rT","rTr","rA"].forEach(id=>document.getElementById(id).classList.remove("active"));document.getElementById(role==="trainee"?"rT":role==="trainer"?"rTr":"rA").classList.add("active")}
+async function doLogin(){
+ const email=document.getElementById("loginUser").value.trim().toLowerCase();
+ const pass=document.getElementById("loginPass").value;
+ if(!email||!pass){toast("Enter email and password.");return}
+ const u=db.users.find(x=>String(x.email||"").toLowerCase()===email);
+ if(!u){toast("No account exists with this email.");return}
+ if(u.password!==pass){toast("Incorrect password.");return}
+ if(u.status!=="Approved"){toast("Your account is awaiting Admin approval.");return}
+ current.name=u.name;current.role=u.role.toLowerCase();
+ document.getElementById("landing").classList.add("hidden");
+ document.getElementById("loginModal").style.display="none";
+ document.getElementById("app").classList.remove("hidden");
+ current.page="dashboard";render();
+}
+function askAI(){
+ const q=(document.getElementById("aiText")||{}).value||"";
+ if(!q.trim()){toast("Enter a question.");return}
+ alert("Capacity AI: This prototype can answer basic questions about courses, skills and assessments. Online AI integration will be connected in the backend version.");
+}
+function showLogin(){
+ document.getElementById("loginPanel").classList.remove("hidden");
+ document.getElementById("signupPanel").classList.add("hidden");
+ document.getElementById("forgotPanel").classList.add("hidden");
+ document.getElementById("resetPanel").classList.add("hidden");
+}
+function showSignup(){
+ document.getElementById("loginPanel").classList.add("hidden");
+ document.getElementById("signupPanel").classList.remove("hidden");
+ document.getElementById("forgotPanel").classList.add("hidden");
+ document.getElementById("resetPanel").classList.add("hidden");
+}
+function createAccount(){
+ const name=document.getElementById("signupName").value.trim();
+ const email=document.getElementById("signupEmail").value.trim().toLowerCase();
+ const pass=document.getElementById("signupPass").value;
+ const confirm=document.getElementById("signupConfirm").value;
+ const role=document.getElementById("signupRole").value;
+ if(!name||!email||!pass||!confirm){toast("Fill all fields.");return}
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast("Enter a valid email address.");return}
+ if(pass.length<6){toast("Password must be at least 6 characters.");return}
+ if(pass!==confirm){toast("Passwords do not match.");return}
+ if(db.users.some(u=>String(u.email||"").toLowerCase()===email)){toast("This email is already registered.");return}
+ const u={id:Date.now(),name,email,password:pass,role:roleTitle(role),status:role==="trainer"?"Pending":"Approved",enrolled:[],completed:[],attempted:[],passed:0,progress:0,certifications:0,courseProgress:{}};
+ db.users.push(u);addActivity(name+" created a "+u.role+" account.");save();
+ toast(role==="trainer"?"Account created. Admin approval required.":"Account created. Please login with the same email and password.");
+ document.getElementById("loginUser").value=email;document.getElementById("loginPass").value="";showLogin();
+} 
+function showForgot(){
+ document.getElementById("loginPanel").classList.add("hidden");
+ document.getElementById("signupPanel").classList.add("hidden");
+ document.getElementById("forgotPanel").classList.remove("hidden");
+ document.getElementById("resetPanel").classList.add("hidden");
+}
+let passwordResetEmail="";
+function resetPassword(){
+ const email=document.getElementById("forgotEmail").value.trim().toLowerCase();
+ if(!email){toast("Enter your registered email.");return}
+ const u=db.users.find(x=>String(x.email||"").toLowerCase()===email);
+ if(!u){toast("No account found with this email.");return}
+ passwordResetEmail=email;
+ document.getElementById("forgotPanel").classList.add("hidden");
+ document.getElementById("resetPanel").classList.remove("hidden");
+ document.getElementById("resetInfo").textContent="Create a new password for "+email+".";
+}
+function saveNewPassword(){
+ const p=document.getElementById("newPass").value,pc=document.getElementById("newPassConfirm").value;
+ if(!p||!pc){toast("Enter the new password twice.");return}
+ if(p.length<6){toast("Password must be at least 6 characters.");return}
+ if(p!==pc){toast("Passwords do not match.");return}
+ const u=db.users.find(x=>String(x.email||"").toLowerCase()===passwordResetEmail);
+ if(!u){toast("Account not found.");showLogin();return}
+ u.password=p;save();toast("Password changed successfully. Please login.");
+ document.getElementById("loginUser").value=u.email;document.getElementById("loginPass").value="";
+ passwordResetEmail="";showLogin();
+}
+function roleTitle(r){return r==="trainee"?"Trainee":r==="trainer"?"Trainer":"Admin"}
+function logout(){document.getElementById("app").classList.add("hidden");document.getElementById("landing").classList.remove("hidden")}
+function nav(p){current.page=p;render()}
+function render(){
+ document.getElementById("userRole").textContent=current.role.toUpperCase();
+ document.getElementById("side").innerHTML='<div class="sideTitle">'+current.role.toUpperCase()+' MODULE</div>'+menus[current.role].map(p=>'<button class="'+(p===current.page?"active":"")+'" onclick="nav(\''+p+'\')">'+labels[p]+'</button>').join("");
+ const f=window["page_"+current.page];document.getElementById("main").innerHTML=f?f():'<div class="empty">Page not found</div>';
+}
+function header(t,s){return '<div class="pageTitle"><div><h2>'+t+'</h2><p style="color:#667085">'+(s||"")+'</p></div></div>'}
+function me(){return db.users.find(u=>u.name===current.name&&u.role===roleTitle(current.role))}
+function trainerName(){return current.name}
+
+function page_dashboard(){
+ if(current.role==="trainee"){
+   const u=me()||{enrolled:[],completed:[],attempted:[]};
+   return header("Trainee Dashboard","Welcome, "+esc(current.name))+
+   '<div class="grid4"><div class="metric"><small>Enrolled Courses</small><strong>'+u.enrolled.length+'</strong></div><div class="metric"><small>Completed Courses</small><strong>'+u.completed.length+'</strong></div><div class="metric"><small>Assessments Attempted</small><strong>'+u.attempted.length+'</strong></div><div class="metric"><small>Available Courses</small><strong>'+db.courses.filter(c=>c.published).length+'</strong></div></div>'+
+   '<div class="grid2"><div class="card"><h3 style="color:#174879">Available Courses</h3>'+courseCards(true)+'</div><div class="card"><h3 style="color:#174879">Announcements</h3>'+announcementList()+'</div></div>';
+ }
+ if(current.role==="trainer"){
+   const own=db.courses.filter(c=>c.trainer===current.name);
+   const participants=db.users.filter(u=>u.role==="Trainee"&&u.enrolled.some(id=>own.some(c=>c.id===id))).length;
+   return header("Trainer Dashboard","Manage your training activities")+
+   '<div class="grid4"><div class="metric"><small>My Courses</small><strong>'+own.length+'</strong></div><div class="metric"><small>Participants</small><strong>'+participants+'</strong></div><div class="metric"><small>Assessments</small><strong>'+db.assessments.filter(a=>a.trainer===current.name).length+'</strong></div><div class="metric"><small>Resources</small><strong>'+db.resources.filter(r=>r.trainer===current.name).length+'</strong></div></div>'+
+   '<div class="grid2"><div class="card"><h3 style="color:#174879">Learners Needing Support</h3>'+supportList(own)+'</div><div class="card"><h3 style="color:#174879">Recent Training Activity</h3>'+activityForTrainer()+'</div></div>';
+ }
+ return adminDashboard();
+}
+function adminDashboard(){
+ const trainees=db.users.filter(u=>u.role==="Trainee"&&u.status==="Approved").length, trainers=db.users.filter(u=>u.role==="Trainer"&&u.status==="Approved").length;
+ const active=db.courses.filter(c=>c.published).length, cert=db.users.reduce((n,u)=>n+Number(u.certifications||0),0);
+ const top=[...db.courses].sort((a,b)=>b.enrollmentCount-a.enrollmentCount).filter(c=>c.enrollmentCount>0).slice(0,3);
+ return header("Admin Dashboard","Platform overview")+
+ '<div class="grid4"><div class="metric"><small>Total Trainees</small><strong>'+trainees+'</strong></div><div class="metric"><small>Total Trainers</small><strong>'+trainers+'</strong></div><div class="metric"><small>Active Courses</small><strong>'+active+'</strong></div><div class="metric"><small>Certifications Issued</small><strong>'+cert+'</strong></div></div>'+
+ '<div class="grid2"><div class="card"><h3 style="color:#174879">Platform Overview</h3>'+overviewMetrics()+'</div><div class="card"><h3 style="color:#174879">Top Courses by Enrollment</h3>'+(top.length?top.map(c=>'<div class="item"><b>'+esc(c.title)+'</b><span class="badge">'+c.enrollmentCount+'</span><p>Chosen by trainees</p></div>').join(""):'<div class="empty">No courses have been chosen by trainees yet.</div>')+'</div></div>'+
+ '<div class="grid2"><div class="card"><h3 style="color:#174879">Pending Approvals</h3><div class="item"><b>Trainer approvals</b><span class="badge">'+db.users.filter(u=>u.role==="Trainer"&&u.status==="Pending").length+'</span></div><div class="item"><b>Role requests</b><span class="badge">0</span></div></div><div class="card"><h3 style="color:#174879">Recent Activity</h3>'+recentActivity()+'</div></div>';
+}
+function overviewMetrics(){
+ const trainees=db.users.filter(u=>u.role==="Trainee"&&u.status==="Approved");
+ const enrolled=trainees.reduce((n,u)=>n+u.enrolled.length,0), completed=trainees.reduce((n,u)=>n+u.completed.length,0), attempted=trainees.reduce((n,u)=>n+u.attempted.length,0);
+ const assigned=trainees.reduce((n,u)=>n+db.assessments.filter(a=>a.published).length,0);
+ const en=trainees.length?Math.min(100,Math.round((enrolled/Math.max(1,trainees.length))*100)):0;
+ const co=enrolled?Math.round(completed/enrolled*100):0, ap=assigned?Math.round(attempted/assigned*100):0;
+ const overall=(enrolled+assigned)?Math.round((completed+attempted)/(enrolled+assigned)*100):0;
+ return [['Course Enrollment',en],['Course Completion',co],['Assessment Participation',ap],['Overall Participation',overall]].map(x=>'<div class="barrow"><div class="barlabel"><span>'+x[0]+'</span><b>'+x[1]+'%</b></div><div class="barbg"><div class="bar" style="width:'+x[1]+'%"></div></div></div>').join("");
+}
+function courseCards(){
+ const u=me()||{enrolled:[]},cs=db.courses.filter(c=>c.published);
+ if(!cs.length)return '<div class="empty">No published courses yet.</div>';
+ return '<div class="courseGrid">'+cs.map(c=>'<div class="courseCard"><h3>'+esc(c.title)+'</h3><p>'+esc(c.description||"")+'</p><p><b>Trainer:</b> '+esc(c.trainer)+' · '+esc(c.subject)+'</p><span class="freeTag">FREE</span><div class="courseActions"><button class="btn" onclick="viewCourse('+c.id+')">View Course</button>'+(u.enrolled.includes(c.id)?'<span class="tag">Enrolled</span>':'<button class="btn fill" onclick="enroll('+c.id+')">Enroll Free</button>')+'</div></div>').join("")+'</div>';
+}
+function announcementList(){return db.announcements.length?db.announcements.slice().reverse().slice(0,5).map(a=>'<div class="item"><b>'+esc(a.title)+'</b><p>'+esc(a.message)+'</p></div>').join(""):'<div class="empty">No announcements published yet.</div>'}
+function recentActivity(){return db.activity.length?db.activity.slice().reverse().slice(0,5).map(a=>'<div class="item"><b>'+esc(a.text)+'</b><p>'+esc(a.time)+'</p></div>').join(""):'<div class="empty">No activity yet.</div>'}
+function addActivity(text){db.activity.push({text,time:new Date().toLocaleString()});db.activity=db.activity.slice(-30)}
+function activityForTrainer(){const a=db.activity.filter(x=>x.text.toLowerCase().includes(current.name.toLowerCase()));return a.length?a.slice().reverse().slice(0,5).map(x=>'<div class="item"><b>'+esc(x.text)+'</b><p>'+esc(x.time)+'</p></div>').join(""):'<div class="empty">No activity yet.</div>'}
+function supportList(own){const ids=own.map(c=>c.id);const s=db.users.filter(u=>u.role==="Trainee"&&u.enrolled.some(id=>ids.includes(id))&&u.progress<50);return s.length?s.map(u=>'<div class="item"><b>'+esc(u.name)+'</b><p>Progress: '+u.progress+'%</p></div>').join(""):'<div class="empty">No learners currently need support.</div>'}
+
+function page_profile(){return header("Manage Profile","Professional profile")+'<div class="card"><div class="formgrid"><div class="field"><label>Name</label><input id="pname" value="'+esc(current.name)+'"></div><div class="field"><label>Qualification</label><input id="pqual" placeholder="Qualification"></div><div class="field full"><label>Work Experience</label><textarea id="pexp"></textarea></div><div class="field"><label>Interests</label><textarea id="pint"></textarea></div><div class="field"><label>Skills</label><input id="pskill" placeholder="Skill name"></div></div><button class="btn fill" onclick="saveProfile()">Save Profile</button></div>'}
+function saveProfile(){const u=me();u.name=document.getElementById("pname").value.trim()||u.name;current.name=u.name;save();toast("Profile saved.");render()}
+
+function page_courses(){return header("Courses","Every course is completely free.")+'<div class="notice">Enroll only when you choose. Live classes never open automatically.</div>'+courseCards()}
+function viewCourse(id){current.courseId=id;current.page="courseDetail";render()}
+function page_courseDetail(){
+ const c=db.courses.find(x=>x.id===current.courseId),u=me();if(!c)return '<div class="empty">Course not found.</div>';
+ const enrolled=!!u&&u.enrolled.includes(c.id),rec=c.recordedClasses||[],notes=c.notes||[],lives=c.liveClasses||[];
+ return '<button class="btn" onclick="nav(\'courses\')">← Back to Courses</button>'+header(esc(c.title),"Trainer: "+esc(c.trainer))+'<div class="card"><p>'+esc(c.description||"")+'</p><p><b>Subject:</b> '+esc(c.subject)+'</p><span class="freeTag">FREE COURSE</span>'+(!enrolled?'<div style="margin-top:15px"><button class="btn fill" onclick="enroll('+c.id+')">Enroll Free</button></div>':'<div class="notice">You are enrolled. Learn at your own pace.</div>')+'</div>'+
+ '<div class="grid2"><div class="card"><h3 style="color:#174879">📹 Recorded Classes</h3>'+(rec.length?rec.map(r=>'<div class="lessonCard"><b>'+esc(r.title)+'</b><p>'+esc(r.description||"")+'</p><button class="btn fill" onclick="openResourceUrl(\''+esc(r.url)+'\')">Watch Recorded Class</button></div>').join(""):'<div class="empty">No recorded classes yet.</div>')+'</div>'+
+ '<div class="card"><h3 style="color:#174879">📄 Notes</h3>'+(notes.length?notes.map(n=>'<div class="noteCard"><b>'+esc(n.title)+'</b><p>'+esc(n.description||"")+'</p><button class="btn" onclick="openResourceUrl(\''+esc(n.url)+'\')">Open Notes</button></div>').join(""):'<div class="empty">No notes yet.</div>')+'</div></div>'+
+ '<div class="card" style="margin-top:18px"><h3 style="color:#174879">🔴 Live Classes</h3>'+(lives.length?lives.map(l=>'<div class="liveCard"><div class="liveDot">● SCHEDULED LIVE CLASS</div><h4>'+esc(l.title)+'</h4><p>📅 '+esc(l.date)+' · 🕕 '+esc(l.time)+' · '+esc(l.duration||"")+'</p><p>'+esc(l.description||"")+'</p>'+(enrolled?'<button class="btn fill" onclick="openResourceUrl(\''+esc(l.link)+'\')">Join Live Class</button>':'<span class="tag">Enroll to access</span>')+'</div>').join(""):'<div class="empty">No live classes scheduled yet.</div>')+'</div>';
+}
+function openResourceUrl(url){if(!url){toast("No link added yet.");return}window.open(url,"_blank","noopener")}
+function enroll(id){
+ const u=me(),c=db.courses.find(x=>x.id===id);if(!u||!c)return;
+ if(!u.enrolled.includes(id)){u.enrolled.push(id);c.enrollmentCount++;u.progress=0;addActivity(current.name+" enrolled in "+c.title+".");save();toast("Enrolled in "+c.title);render();}
+}
+function page_resources(){const u=me()||{enrolled:[]};const rs=db.resources.filter(r=>u.enrolled.includes(r.courseId));return header("Learning Resources","Resources uploaded by Trainers for your enrolled courses.")+(rs.length?'<div class="card">'+rs.map(r=>'<div class="item"><b>'+esc(r.title)+'</b><p>'+esc(r.type)+' · '+esc(r.courseTitle)+' · Trainer: '+esc(r.trainer)+'</p></div>').join("")+'</div>':'<div class="empty">No resources available for your enrolled courses yet.</div>')}
+
+function page_mcq(){
+ const u=me()||{enrolled:[]}, qs=db.assessments.filter(a=>a.published&&u.enrolled.includes(a.courseId));
+ if(!qs.length)return header("MCQ Assessment","Trainer-created assessments available after course enrollment.")+'<div class="empty">No published assessments are available for your enrolled courses yet.</div>';
+ return header("MCQ Assessment","Complete trainer-created assessments.")+qs.map(a=>'<div class="card" style="margin-bottom:15px"><h3 style="color:#174879">'+esc(a.title)+'</h3><p style="color:#667085">Course: '+esc(a.courseTitle)+' · Topic: '+esc(a.topic)+'</p>'+a.questions.map((q,i)=>'<div class="item"><b>'+esc(q.q)+'</b>'+q.opts.map((o,j)=>'<label style="display:block;padding:7px 0"><input type="radio" name="a'+a.id+'q'+i+'" value="'+j+'"> '+esc(o)+'</label>').join("")+'</div>').join("")+'<button class="btn fill" onclick="submitAssessment('+a.id+')">Submit Assessment</button></div>').join("");
+}
+function submitAssessment(id){
+ const a=db.assessments.find(x=>x.id===id),u=me();let score=0;
+ a.questions.forEach((q,i)=>{const x=document.querySelector('input[name="a'+a.id+'q'+i+'"]:checked');if(x&&+x.value===q.ans)score++});
+ if(a.questions.some((q,i)=>!document.querySelector('input[name="a'+a.id+'q'+i+'"]:checked'))){toast("Answer every question.");return}
+ const pct=Math.round(score/a.questions.length*100);if(!u.attempted.includes(id))u.attempted.push(id);if(pct>=50)u.passed=(u.passed||0)+1;
+ a.attempts=(a.attempts||0)+1;a.passed=(a.passed||0)+(pct>=50?1:0);u.lastScore=pct;addActivity(current.name+" completed assessment "+a.title+" with "+pct+"%.");save();toast("Result: "+score+"/"+a.questions.length);render();
+}
+
+function page_questionnaires(){
+ if(current.role==="trainer")return trainerAssessmentForm();
+ const qs=db.questionnaires.filter(q=>q.published&&((me()||{}).enrolled||[]).includes(q.courseId));
+ return header("Questionnaires","Assignments created by Trainers.")+(qs.length?qs.map(q=>'<div class="card" style="margin-bottom:15px"><h3 style="color:#174879">'+esc(q.title)+'</h3><p>Deadline: '+esc(q.deadline||"Not set")+'</p><button class="btn fill" onclick="attemptQuestionnaire('+q.id+')">Attempt</button></div>').join(""):'<div class="empty">No trainer-created questionnaires are available yet.</div>');
+}
+function trainerAssessmentForm(){
+ const own=db.courses.filter(c=>c.trainer===current.name);
+ return header("Create Assessment","Create MCQ assessments for your courses.")+'<div class="card"><div class="field"><label>Course</label><select id="acourse">'+own.map(c=>'<option value="'+c.id+'">'+esc(c.title)+'</option>').join("")+'</select></div><div class="field"><label>Assessment Title</label><input id="atitle" placeholder="Assessment title"></div><div class="field"><label>Topic / Chapter</label><input id="atopic" placeholder="Chapter or topic"></div><div class="field"><label>Question</label><textarea id="aq"></textarea></div><div class="formgrid"><div class="field"><label>Option A</label><input id="ao0"></div><div class="field"><label>Option B</label><input id="ao1"></div><div class="field"><label>Option C</label><input id="ao2"></div><div class="field"><label>Option D</label><input id="ao3"></div></div><div class="field"><label>Correct Answer</label><select id="aans"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div><button class="btn fill" onclick="createAssessment()">Create Assessment</button></div>'}
+function createAssessment(){
+ const c=db.courses.find(x=>x.id===+document.getElementById("acourse").value);const title=document.getElementById("atitle").value.trim(),q=document.getElementById("aq").value.trim(),opts=[0,1,2,3].map(i=>document.getElementById("ao"+i).value.trim());
+ if(!c||!title||!q||opts.some(x=>!x)){toast("Fill all assessment fields.");return}
+ db.assessments.push({id:Date.now(),title,topic:document.getElementById("atopic").value.trim(),courseId:c.id,courseTitle:c.title,trainer:current.name,published:true,attempts:0,passed:0,questions:[{q,opts,ans:+document.getElementById("aans").value}]});
+ addActivity(current.name+" created assessment "+title+".");save();toast("Assessment created.");render();
+}
+function attemptQuestionnaire(id){const q=db.questionnaires.find(x=>x.id===id);alert("Questionnaire '"+q.title+"' is available. Add its questions through the Trainer workflow.")}
+function page_participants(){const own=db.courses.filter(c=>c.trainer===current.name).map(c=>c.id);const ts=db.users.filter(u=>u.role==="Trainee"&&u.enrolled.some(id=>own.includes(id)));return header("Participants & Performance","Only trainees who actually enroll in your courses appear here.")+(ts.length?'<div class="card"><table class="table"><tr><th>Trainee</th><th>Course</th><th>Progress</th><th>Assessment Score</th></tr>'+ts.map(u=>'<tr><td>'+esc(u.name)+'</td><td>'+u.enrolled.map(id=>db.courses.find(c=>c.id===id)?.title||"").join(", ")+'</td><td>'+Number(u.progress||0)+'%</td><td>'+Number(u.lastScore||0)+'%</td></tr>').join("")+'</table></div>':'<div class="empty">No trainees have enrolled in your courses yet.</div>')}
+function page_library(){
+ const own=db.courses.filter(c=>c.trainer===current.name),opts=own.map(c=>'<option value="'+c.id+'">'+esc(c.title)+'</option>').join("");
+ return header("Training Library","Build complete courses with recorded classes, notes and live classes.")+
+ '<div class="grid2">'+
+ '<div class="card"><h3 style="color:#174879">Create Course</h3><div class="field"><label>Course Title</label><input id="ctitle"></div><div class="field"><label>Subject</label><input id="csubject"></div><div class="field"><label>Description</label><textarea id="cdesc"></textarea></div><button class="btn fill" onclick="createCourse()">Create Course</button></div>'+
+ '<div class="card"><h3 style="color:#174879">📹 Add Recorded Class</h3><div class="field"><label>Course</label><select id="recCourse">'+opts+'</select></div><div class="field"><label>Class Title</label><input id="recTitle"></div><div class="field"><label>Video URL</label><input id="recUrl" placeholder="YouTube / Drive / video URL"></div><div class="field"><label>Description</label><input id="recDesc"></div><button class="btn fill" onclick="addRecordedClass()">Add Recorded Class</button></div>'+
+ '<div class="card"><h3 style="color:#174879">📄 Add Notes</h3><div class="field"><label>Course</label><select id="noteCourse">'+opts+'</select></div><div class="field"><label>Notes Title</label><input id="noteTitle"></div><div class="field"><label>Notes / PDF URL</label><input id="noteUrl" placeholder="PDF / Drive URL"></div><div class="field"><label>Description</label><input id="noteDesc"></div><button class="btn fill" onclick="addCourseNote()">Add Notes</button></div>'+
+ '<div class="card"><h3 style="color:#174879">🔴 Schedule Live Class</h3><div class="field"><label>Course</label><select id="liveCourse">'+opts+'</select></div><div class="field"><label>Class Title</label><input id="liveTitle"></div><div class="formgrid"><div class="field"><label>Date</label><input id="liveDate" type="date"></div><div class="field"><label>Time</label><input id="liveTime" type="time"></div></div><div class="field"><label>Duration</label><input id="liveDuration" placeholder="1 hour"></div><div class="field"><label>Meeting Link</label><input id="liveLink" placeholder="Google Meet / Zoom link"></div><div class="field"><label>Description</label><textarea id="liveDesc"></textarea></div><button class="btn fill" onclick="scheduleLiveClass()">Schedule Live Class</button></div></div>'+
+ '<div class="card" style="margin-top:18px"><h3 style="color:#174879">My Courses</h3>'+(own.length?own.map(c=>'<div class="item"><b>'+esc(c.title)+'</b> <span class="'+(c.published?'badge green':'tag')+'">'+(c.published?"Published":"Draft")+'</span><p>Enrollments: '+(c.enrollmentCount||0)+' · Recorded: '+(c.recordedClasses||[]).length+' · Notes: '+(c.notes||[]).length+' · Live: '+(c.liveClasses||[]).length+'</p><div class="courseActions">'+(!c.published?'<button class="btn fill" onclick="publishCourse('+c.id+')">Publish for Trainees</button>':"")+'<button class="btn" onclick="viewCourse('+c.id+')">Preview</button></div></div>').join(""):'<div class="empty">Create your first course above.</div>')+'</div>';
+}
+function createCourse(){
+ const title=document.getElementById("ctitle").value.trim(),subject=document.getElementById("csubject").value.trim(),description=document.getElementById("cdesc").value.trim();
+ if(!title||!subject||!description){toast("Fill course details.");return}
+ db.courses.push({id:Date.now(),title,subject,description,trainer:current.name,published:false,enrollmentCount:0,recordedClasses:[],notes:[],liveClasses:[]});
+ addActivity(current.name+" created course "+title+".");save();toast("Course created as draft.");render();
+}
+function publishCourse(id){const c=db.courses.find(x=>x.id===id);c.published=true;addActivity(current.name+" published course "+c.title+".");save();toast("Course published.");render()}
+function addRecordedClass(){
+ const c=db.courses.find(x=>x.id===+document.getElementById("recCourse").value),title=document.getElementById("recTitle").value.trim(),url=document.getElementById("recUrl").value.trim(),description=document.getElementById("recDesc").value.trim();
+ if(!c||!title||!url){toast("Course, title and video URL are required.");return}
+ c.recordedClasses=c.recordedClasses||[];c.recordedClasses.push({id:Date.now(),title,url,description});addActivity(current.name+" added recorded class "+title+".");save();toast("Recorded class added.");render();
+}
+function addCourseNote(){
+ const c=db.courses.find(x=>x.id===+document.getElementById("noteCourse").value),title=document.getElementById("noteTitle").value.trim(),url=document.getElementById("noteUrl").value.trim(),description=document.getElementById("noteDesc").value.trim();
+ if(!c||!title||!url){toast("Course, title and notes URL are required.");return}
+ c.notes=c.notes||[];c.notes.push({id:Date.now(),title,url,description});addActivity(current.name+" added notes "+title+".");save();toast("Notes added.");render();
+}
+function scheduleLiveClass(){
+ const c=db.courses.find(x=>x.id===+document.getElementById("liveCourse").value),title=document.getElementById("liveTitle").value.trim(),date=document.getElementById("liveDate").value,time=document.getElementById("liveTime").value,link=document.getElementById("liveLink").value.trim(),duration=document.getElementById("liveDuration").value.trim(),description=document.getElementById("liveDesc").value.trim();
+ if(!c||!title||!date||!time||!link){toast("Course, title, date, time and meeting link are required.");return}
+ c.liveClasses=c.liveClasses||[];c.liveClasses.push({id:Date.now(),title,date,time,link,duration,description});addActivity(current.name+" scheduled live class "+title+".");save();toast("Live class scheduled.");render();
+}
+function createResource(){const c=db.courses.find(x=>x.id===+document.getElementById("rcourse").value),title=document.getElementById("rtitle").value.trim();if(!c||!title){toast("Select a course and enter a title.");return}db.resources.push({id:Date.now(),courseId:c.id,courseTitle:c.title,title,type:document.getElementById("rtype").value,trainer:current.name});addActivity(current.name+" uploaded resource "+title+".");save();toast("Resource added.");render()}
+
+function page_users(){
+ return header("User Approval & Roles","Only registered accounts appear here.")+
+ (db.users.length?'<div class="card"><table class="table"><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr>'+db.users.map((u,i)=>'<tr><td>'+esc(u.name)+'</td><td>'+esc(u.email||"")+'</td><td>'+esc(u.role)+'</td><td><span class="status '+String(u.status||"").toLowerCase()+'">'+esc(u.status)+'</span></td><td>'+(u.status==="Pending"?'<button class="btn fill" onclick="approveUser('+i+')">Approve</button>':'—')+'</td></tr>').join("")+'</table></div>':'<div class="empty">No users yet.</div>');
+}
+function approveUser(i){db.users[i].status="Approved";addActivity(db.users[i].name+" was approved by Admin.");save();toast("User approved.");render()}
+function page_monitoring(){
+ const trainees=db.users.filter(u=>u.role==="Trainee"&&u.status==="Approved"), enrolled=trainees.reduce((n,u)=>n+u.enrolled.length,0), completed=trainees.reduce((n,u)=>n+u.completed.length,0), attempts=trainees.reduce((n,u)=>n+u.attempted.length,0);
+ return header("Monitoring","Results generated only from actual trainee and trainer actions.")+'<div class="grid4"><div class="metric"><small>Total Participants</small><strong>'+trainees.length+'</strong></div><div class="metric"><small>Enrollments</small><strong>'+enrolled+'</strong></div><div class="metric"><small>Assessments Completed</small><strong>'+attempts+'</strong></div><div class="metric"><small>Course Completions</small><strong>'+completed+'</strong></div></div><div class="grid2"><div class="card"><h3 style="color:#174879">Participation</h3>'+overviewMetrics()+'</div><div class="card"><h3 style="color:#174879">Enrollment by Course</h3>'+([...db.courses].filter(c=>c.enrollmentCount>0).sort((a,b)=>b.enrollmentCount-a.enrollmentCount).map(c=>'<div class="item"><b>'+esc(c.title)+'</b><span class="badge">'+c.enrollmentCount+'</span></div>').join("")||'<div class="empty">No trainee enrollments yet.</div>')+'</div></div>'}
+function page_assessments(){return header("Assessments","Only assessments created by Trainers are listed.")+(db.assessments.length?'<div class="card">'+db.assessments.map(a=>'<div class="item"><b>'+esc(a.title)+'</b><span class="badge green">Published</span><p>Trainer: '+esc(a.trainer)+' · Course: '+esc(a.courseTitle)+' · Attempts: '+a.attempts+' · Passed: '+a.passed+'</p></div>').join("")+'</div>':'<div class="empty">No trainer-created assessments yet.</div>')}
+function page_publish(){return header("Publish & Announce","Admin content appears on the Trainee dashboard.")+'<div class="card"><div class="field"><label>Title</label><input id="pubTitle"></div><div class="field"><label>Message</label><textarea id="pubMsg"></textarea></div><button class="btn fill" onclick="publishAnnouncement()">Publish</button></div><div class="card" style="margin-top:18px"><h3 style="color:#174879">Published</h3>'+announcementList()+'</div>'}
+function publishAnnouncement(){const title=document.getElementById("pubTitle").value.trim(),message=document.getElementById("pubMsg").value.trim();if(!title||!message){toast("Enter title and message.");return}db.announcements.push({id:Date.now(),title,message});addActivity("Admin published announcement: "+title+".");save();toast("Published to Trainee dashboard.");render()}
+function page_feedback_admin(){return page_feedback()}
+function submitFeedback(){
+ const category=document.getElementById("fcat").value;
+ const message=document.getElementById("fmsg").value.trim();
+ if(!message){toast("Enter your feedback.");return}
+ db.feedback.push({id:Date.now(),category,message,trainee:current.name,time:new Date().toLocaleString()});
+ addActivity(current.name+" submitted feedback.");
+ save();toast("Feedback submitted.");render();
+}
+function page_feedback(){
+ if(current.role==="trainee")return header("Feedback / Help","Submit feedback that will appear for Trainers and Admin.")+'<div class="card"><div class="field"><label>Category</label><select id="fcat"><option>Course</option><option>Resources</option><option>Assessment</option><option>General</option></select></div><div class="field"><label>Message</label><textarea id="fmsg" rows="5"></textarea></div><button class="btn fill" onclick="submitFeedback()">Submit Feedback</button></div>';
+ return header("Feedback","Only feedback submitted by Trainees is shown.")+(db.feedback.length?'<div class="card">'+db.feedback.slice().reverse().map(f=>'<div class="item"><b>'+esc(f.category)+' feedback</b><span class="badge">'+esc(f.trainee)+'</span><p>'+esc(f.message)+'</p><p>'+esc(f.time)+'</p></div>').join("")+'</div>':'<div class="empty">No trainee feedback submitted yet.</div>');
+}
+
+function bindAliases(){window.page_feedback=page_feedback}
+bindAliases();
+</script>
+</body>
+</html>
+<style>
+.cc-saved-badge{position:fixed;right:14px;bottom:14px;z-index:9999;padding:8px 12px;border-radius:10px;background:#174879;color:#fff;font:600 12px Arial;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+</style>
+<div class="cc-saved-badge">Capacity Connect • Saved Data</div>
+<script>
+window.resetToSavedCapacityData=function(){
+  if(confirm("Restore the original saved Capacity Connect data?")){
+    localStorage.removeItem("capacityConnectStandaloneSaved_v1");
+    location.reload();
+  }
+};
+</script>
