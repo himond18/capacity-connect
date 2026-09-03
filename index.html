@@ -111,22 +111,33 @@ const menus={
 };
 const labels={dashboard:"Dashboard",profile:"Manage Profile",courses:"Enroll in Courses",resources:"Learning Resources",mcq:"MCQ Assessment",questionnaires:"Questionnaires",feedback:"Feedback / Help",participants:"Participants & Performance",library:"Training Library",users:"User Approval & Roles",monitoring:"Monitoring",assessments:"Assessments",publish:"Publish & Announce"};
 
+const API_BASE="https://capacity-connect-backend-9o1f.onrender.com";
+
 function openLogin(){document.getElementById("loginModal").style.display="flex";showLogin()}
 function closeLogin(){document.getElementById("loginModal").style.display="none"}
-function chooseRole(role){current.role=role;["rT","rTr","rA"].forEach(id=>document.getElementById(id).classList.remove("active"));document.getElementById(role==="trainee"?"rT":role==="trainer"?"rTr":"rA").classList.add("active")}
+function chooseRole(role){current.role=role;["rT","rTr","rA"].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove("active")});const id=role==="trainee"?"rT":role==="trainer"?"rTr":"rA";const e=document.getElementById(id);if(e)e.classList.add("active")}
 async function doLogin(){
  const email=document.getElementById("loginUser").value.trim().toLowerCase();
  const pass=document.getElementById("loginPass").value;
  if(!email||!pass){toast("Enter email and password.");return}
- const u=db.users.find(x=>String(x.email||"").toLowerCase()===email);
- if(!u){toast("No account exists with this email.");return}
- if(u.password!==pass){toast("Incorrect password.");return}
- if(u.status!=="Approved"){toast("Your account is awaiting Admin approval.");return}
- current.name=u.name;current.role=u.role.toLowerCase();
- document.getElementById("landing").classList.add("hidden");
- document.getElementById("loginModal").style.display="none";
- document.getElementById("app").classList.remove("hidden");
- current.page="dashboard";render();
+ try{
+   const response=await fetch(API_BASE+"/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass})});
+   const data=await response.json();
+   if(!response.ok){toast(data.message||"Login failed.");return}
+   const accountRole=String(data.user.role||"").toLowerCase();
+   if(accountRole!==current.role){toast("Select the "+roleTitle(accountRole)+" role to login.");return}
+   current.name=data.user.name;current.role=accountRole;current.userId=data.user.id;current.token=data.token;
+   sessionStorage.setItem("capacityConnectToken",data.token);sessionStorage.setItem("capacityConnectUser",JSON.stringify(data.user));
+   syncBackendUser(data.user);
+   document.getElementById("landing").classList.add("hidden");document.getElementById("loginModal").style.display="none";document.getElementById("app").classList.remove("hidden");current.page="dashboard";render();
+ }catch(e){console.error(e);toast("Cannot connect to Capacity Connect server.")}
+}
+function syncBackendUser(user){
+ let u=db.users.find(x=>String(x.id)===String(user.id));
+ if(!u) u=db.users.find(x=>String(x.email||"").toLowerCase()===String(user.email||"").toLowerCase());
+ const local={id:user.id,name:user.name,email:user.email,role:roleTitle(String(user.role||"").toLowerCase()),status:String(user.status||"approved").toLowerCase()==="pending"?"Pending":String(user.status||"approved").toLowerCase()==="rejected"?"Rejected":"Approved",enrolled:[],completed:[],attempted:[],passed:0,progress:0,certifications:0,courseProgress:{}};
+ if(u) Object.assign(u,local); else db.users.push(local);
+ save();
 }
 function askAI(){
  const q=(document.getElementById("aiText")||{}).value||"";
@@ -145,7 +156,7 @@ function showSignup(){
  document.getElementById("forgotPanel").classList.add("hidden");
  document.getElementById("resetPanel").classList.add("hidden");
 }
-function createAccount(){
+async function createAccount(){
  const name=document.getElementById("signupName").value.trim();
  const email=document.getElementById("signupEmail").value.trim().toLowerCase();
  const pass=document.getElementById("signupPass").value;
@@ -155,12 +166,15 @@ function createAccount(){
  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast("Enter a valid email address.");return}
  if(pass.length<6){toast("Password must be at least 6 characters.");return}
  if(pass!==confirm){toast("Passwords do not match.");return}
- if(db.users.some(u=>String(u.email||"").toLowerCase()===email)){toast("This email is already registered.");return}
- const u={id:Date.now(),name,email,password:pass,role:roleTitle(role),status:role==="trainer"?"Pending":"Approved",enrolled:[],completed:[],attempted:[],passed:0,progress:0,certifications:0,courseProgress:{}};
- db.users.push(u);addActivity(name+" created a "+u.role+" account.");save();
- toast(role==="trainer"?"Account created. Admin approval required.":"Account created. Please login with the same email and password.");
- document.getElementById("loginUser").value=email;document.getElementById("loginPass").value="";showLogin();
-} 
+ try{
+   const response=await fetch(API_BASE+"/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,password:pass,confirmPassword:confirm,role})});
+   const data=await response.json();
+   if(!response.ok){toast(data.message||"Account creation failed.");return}
+   if(data.user) syncBackendUser(data.user);
+   toast(role==="trainer"?"Account created. Admin approval required.":"Account created. Please login with the same email and password.");
+   document.getElementById("loginUser").value=email;document.getElementById("loginPass").value="";showLogin();
+ }catch(e){console.error(e);toast("Cannot connect to Capacity Connect server.")}
+}
 function showForgot(){
  document.getElementById("loginPanel").classList.add("hidden");
  document.getElementById("signupPanel").classList.add("hidden");
@@ -168,27 +182,8 @@ function showForgot(){
  document.getElementById("resetPanel").classList.add("hidden");
 }
 let passwordResetEmail="";
-function resetPassword(){
- const email=document.getElementById("forgotEmail").value.trim().toLowerCase();
- if(!email){toast("Enter your registered email.");return}
- const u=db.users.find(x=>String(x.email||"").toLowerCase()===email);
- if(!u){toast("No account found with this email.");return}
- passwordResetEmail=email;
- document.getElementById("forgotPanel").classList.add("hidden");
- document.getElementById("resetPanel").classList.remove("hidden");
- document.getElementById("resetInfo").textContent="Create a new password for "+email+".";
-}
-function saveNewPassword(){
- const p=document.getElementById("newPass").value,pc=document.getElementById("newPassConfirm").value;
- if(!p||!pc){toast("Enter the new password twice.");return}
- if(p.length<6){toast("Password must be at least 6 characters.");return}
- if(p!==pc){toast("Passwords do not match.");return}
- const u=db.users.find(x=>String(x.email||"").toLowerCase()===passwordResetEmail);
- if(!u){toast("Account not found.");showLogin();return}
- u.password=p;save();toast("Password changed successfully. Please login.");
- document.getElementById("loginUser").value=u.email;document.getElementById("loginPass").value="";
- passwordResetEmail="";showLogin();
-}
+function resetPassword(){toast("Online password reset will be connected after email/OTP service is enabled.")}
+function saveNewPassword(){toast("Online password reset will be connected after email/OTP service is enabled.")}
 function roleTitle(r){return r==="trainee"?"Trainee":r==="trainer"?"Trainer":"Admin"}
 function logout(){document.getElementById("app").classList.add("hidden");document.getElementById("landing").classList.remove("hidden")}
 function nav(p){current.page=p;render()}
@@ -362,7 +357,7 @@ bindAliases();
 <style>
 .cc-saved-badge{position:fixed;right:14px;bottom:14px;z-index:9999;padding:8px 12px;border-radius:10px;background:#174879;color:#fff;font:600 12px Arial;box-shadow:0 4px 18px rgba(0,0,0,.18)}
 </style>
-<div class="cc-saved-badge">Capacity Connect • Saved Data</div>
+<div class="cc-saved-badge">Capacity Connect • Online Backend</div>
 <script>
 window.resetToSavedCapacityData=function(){
   if(confirm("Restore the original saved Capacity Connect data?")){
