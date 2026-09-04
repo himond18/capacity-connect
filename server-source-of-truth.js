@@ -1,6 +1,12 @@
 /* Capacity Connect — server is source of truth for shared data */
 (function(){
  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ function userIsEditing(){
+  const el=document.activeElement;
+  if(!el)return false;
+  const tag=String(el.tagName||'').toLowerCase();
+  return tag==='input'||tag==='textarea'||tag==='select'||el.isContentEditable;
+ }
  async function boot(){
   const api=window.capacityAPI&&window.capacityAPI.api;if(!api)return;
   const token=sessionStorage.getItem('token')||localStorage.getItem('token');if(!token)return;
@@ -57,7 +63,11 @@
     db.users=users.users||db.users||[];db.courses=courses.courses||db.courses||[];db.certifications=certs.certifications||db.certifications||[];window.capacityServerStats=stats.stats||{};
    }
    if(typeof save==='function')save();
-   if(typeof render==='function')render();
+
+   /* Never rebuild the page while the user is typing/selecting a form value.
+      The old 1.5-second/10-second server refresh called render() here and
+      replaced the active DOM input, which made typed text disappear. */
+   if(typeof render==='function' && !userIsEditing())render();
   }catch(e){console.warn('Capacity server sync:',e.message)}
  }
  function start(){boot();setInterval(boot,10000)}
