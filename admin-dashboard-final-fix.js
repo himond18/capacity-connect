@@ -38,7 +38,7 @@
    const page=String(current.page||'');
    if(page!==lastPage){lastPage=page;if(page!=='dashboard')dashboardLocked=false;}
   }
-  if(isAdminDashboard()){dashboardLocked=true;apply();fetchStats()}
+  if(isAdminDashboard()){apply();fetchStats()}
  }
  function start(){
   install();
