@@ -1,7 +1,25 @@
-/* Capacity Connect — deterministic role API/UI bootstrap */
+/* Capacity Connect — stable integration loader
+   The original single-file app already owns navigation/rendering.
+   Only load backend data/action bridges here; do not stack render/navigation patches. */
 (function(){
- const scripts=['platform-integration.js','platform-api.js','role-api-ui.js','certification-ui.js','production-integration.js','live-data-adapter.js','auth-backend-bridge.js','ui-backend-bridge.js','core-flow-bridge.js','submission-core-ui.js','submission-mode.js','server-source-of-truth.js','render-fix.js','platform-ready.js','final-stability.js','admin-users-fix.js','course-persistence-fix.js','training-library-fix.js','training-library-final-fix.js','admin-dashboard-final-fix.js','interaction-recovery.js','permanent-ui-controller.js'];
- function load(i){if(i>=scripts.length)return; if(document.querySelector('script[src="'+scripts[i]+'"]'))return load(i+1);const s=document.createElement('script');s.src=scripts[i];s.async=false;s.onload=()=>load(i+1);s.onerror=()=>{console.warn('Capacity Connect loader failed:',scripts[i]);load(i+1)};document.head.appendChild(s)}
- function boot(){load(0)}
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  const scripts=[
+    'platform-api.js',
+    'backend-sync.js',
+    'auth-backend-bridge.js',
+    'role-api-ui.js',
+    'core-flow-bridge.js',
+    'admin-users-fix.js'
+  ];
+  function load(i){
+    if(i>=scripts.length)return;
+    if(document.querySelector('script[src="'+scripts[i]+'"]'))return load(i+1);
+    const s=document.createElement('script');
+    s.src=scripts[i];
+    s.async=false;
+    s.onload=function(){load(i+1)};
+    s.onerror=function(){console.warn('Capacity Connect integration failed:',scripts[i]);load(i+1)};
+    document.head.appendChild(s);
+  }
+  function boot(){load(0)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
