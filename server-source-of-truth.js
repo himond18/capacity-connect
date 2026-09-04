@@ -11,6 +11,11 @@
     String(current.role||'').toLowerCase()==='trainer' &&
     String(current.page||'')==='publish';
  }
+ function isAdminDashboard(){
+  return typeof current!=='undefined' && current &&
+    String(current.role||'').toLowerCase()==='admin' &&
+    String(current.page||'')==='dashboard';
+ }
  function normalizeCourse(c){
   if(!c)return null;
   return {
@@ -51,7 +56,7 @@
    let u=db.users.find(x=>String(x.email||'').toLowerCase()===email);
    if(!u){u={id:serverUser.id,name:serverUser.name||'',email:serverUser.email||'',role:serverUser.role||'',status:serverUser.status||'Approved',enrolled:[],completed:[],attempted:[],passed:0,progress:0,certifications:0,courseProgress:{}};db.users.push(u)}
    else{u.id=serverUser.id??u.id;u.name=serverUser.name||u.name;u.email=serverUser.email||u.email;u.role=serverUser.role||u.role;u.status=serverUser.status||u.status;}
-   const role=String(serverUser.role||storedUser.role||'trainee').toLowerCase();
+   const role=String(serverUser.role||storedUser.role||'').toLowerCase();
    if(role==='trainee'){
     const [courses,enrollments,progress,notifications,certs,assessments]=await Promise.all([
      api('/api/platform/courses').catch(()=>({courses:[]})),api('/api/trainee/enrollments').catch(()=>({enrollments:[]})),api('/api/trainee/progress').catch(()=>({progress:[]})),api('/api/notifications').catch(()=>({notifications:[]})),api('/api/trainee/certifications').catch(()=>({certifications:[]})),api('/api/platform/assessments').catch(()=>({assessments:[]}))
@@ -64,8 +69,6 @@
      api('/api/trainer/courses').catch(()=>({courses:[]})),api('/api/trainer/resources').catch(()=>({resources:[]})),api('/api/trainer/live-classes').catch(()=>({liveClasses:[]})),api('/api/trainer/assessments').catch(()=>({assessments:[]})),api('/api/trainer/enrollments').catch(()=>({enrollments:[]})),api('/api/trainer/progress').catch(()=>({progress:[]}))
     ]);
     const serverCourses=Array.isArray(courses.courses)?courses.courses:[];
-    /* Never interpret an empty trainer-course response as "delete all courses".
-       This is what was making the cards appear briefly and then disappear. */
     const base=serverCourses.length?serverCourses:previousCourses;
     db.courses=mergeCourses(previousCourses,base).map(c=>({id:c.id,title:c.title,subject:c.subject,description:c.description,trainer:c.trainer||serverUser.name,published:c.published,status:c.status||'draft',enrollmentCount:c.enrollmentCount,recordedClasses:(resources.resources||[]).filter(r=>String(r.course_id??r.courseId)===String(c.id)&&String(r.type||'').toLowerCase().includes('recorded')),notes:(resources.resources||[]).filter(r=>String(r.course_id??r.courseId)===String(c.id)&&String(r.type||'').toLowerCase().includes('note')),liveClasses:(live.liveClasses||[]).filter(x=>String(x.course_id??x.courseId)===String(c.id))}));
     db.assessments=assessments.assessments||db.assessments||[];db.enrollments=enrollments.enrollments||db.enrollments||[];db.courseProgress=progress.progress||db.courseProgress||[];
@@ -74,8 +77,10 @@
     db.users=users.users||db.users||[];db.courses=courses.courses||db.courses||[];db.certifications=certs.certifications||db.certifications||[];window.capacityServerStats=stats.stats||{};
    }
    if(typeof save==='function')save();
-   /* On Training Library, the dedicated final layer owns the DOM. */
-   if(typeof render==='function'&&!userIsEditing()&&!isTrainerLibrary())render();
+   /* Never rebuild the Admin Dashboard from local state during the background sync.
+      backend-sync.js owns the live counters. Re-rendering here caused the counters
+      to flash/reset and then return when the next stats request completed. */
+   if(typeof render==='function'&&!userIsEditing()&&!isTrainerLibrary()&&!isAdminDashboard())render();
   }catch(e){console.warn('Capacity server sync:',e.message)}
  }
  function start(){boot();setInterval(boot,10000)}
