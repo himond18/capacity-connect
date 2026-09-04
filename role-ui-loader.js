@@ -1,16 +1,13 @@
-/* Capacity Connect — role API/UI bootstrap */
+/* Capacity Connect — deterministic role API/UI bootstrap */
 (function(){
-  function load(src){
-    if(document.querySelector('script[src="'+src+'"]')) return;
-    const s=document.createElement('script');
-    s.src=src;
-    s.async=false;
+  const scripts=['platform-integration.js','platform-api.js','role-api-ui.js','certification-ui.js','platform-ready.js'];
+  function load(i){
+    if(i>=scripts.length)return;
+    if(document.querySelector('script[src="'+scripts[i]+'"]'))return load(i+1);
+    const s=document.createElement('script');s.src=scripts[i];s.async=false;
+    s.onload=()=>load(i+1);s.onerror=()=>console.warn('Capacity Connect loader failed:',scripts[i]);
     document.head.appendChild(s);
   }
-  function boot(){
-    load('platform-loaders.js');
-    setTimeout(()=>load('role-api-ui.js'),250);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
-  else boot();
+  function boot(){load(0)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
