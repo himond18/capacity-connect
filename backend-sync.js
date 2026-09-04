@@ -27,12 +27,12 @@
     let u; try{u=JSON.parse(user)}catch(e){return;}
     if((u.role||'').toLowerCase()!=='admin') return;
     try{
-      const s=await api('/api/admin/stats');
+      const response=await api('/api/admin/stats');
+      const s=response.stats || response.data || response;
       setMetric('Total Trainees',s.totalTrainees??0);
       setMetric('Total Trainers',s.totalTrainers??0);
       setMetric('Active Courses',s.activeCourses??0);
       setMetric('Certifications Issued',s.certificationsIssued??0);
-      // Remove the old assessments counter wherever it appears in an admin metric card.
       document.querySelectorAll('.metric,.kpi').forEach(n=>{
         if((n.innerText||'').toLowerCase().includes('assessments completed')) n.remove();
       });
@@ -40,7 +40,6 @@
   }
   window.syncAdminStats = syncAdminStats;
 
-  // Keep admin dashboard counters synchronized after login/navigation and periodically.
   document.addEventListener('DOMContentLoaded',()=>{
     syncAdminStats();
     setTimeout(syncAdminStats,1200);
