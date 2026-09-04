@@ -1,4 +1,4 @@
-name: Integrate backend sync
+name: Integrate platform loaders
 on:
   push:
     branches: [main]
@@ -10,25 +10,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add backend sync loader
+      - name: Add platform scripts to index
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-          marker = '<script src="backend-sync.js"></script>'
-          if marker not in s:
-              if '</body>' not in s:
-                  raise SystemExit('index.html has no closing body tag')
-              s = s.replace('</body>', marker + '\n</body>', 1)
-              p.write_text(s, encoding='utf-8')
-          else:
-              print('Backend sync already integrated')
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          markers=[
+            '<script src="backend-sync.js"></script>',
+            '<script src="role-ui-loader.js"></script>',
+            '<script src="admin-api.js"></script>'
+          ]
+          insert='\n'.join(x for x in markers if x not in s)+'\n'
+          if insert.strip():
+              if '</body>' not in s: raise SystemExit('index.html has no closing body tag')
+              s=s.replace('</body>',insert+'</body>',1)
+              p.write_text(s,encoding='utf-8')
           PY
       - name: Commit integration
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || git commit -m 'Integrate backend dashboard sync'
+          git diff --cached --quiet || git commit -m 'Integrate platform API loaders'
           git push
