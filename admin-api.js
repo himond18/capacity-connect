@@ -14,7 +14,7 @@
   window.capacityConnectAdmin={
     stats:()=>request('/api/admin/stats'),
     users:()=>request('/api/admin/users'),
-    approve:(id,status)=>request('/api/admin/users/'+encodeURIComponent(id)+'/approval',{method:'PATCH',body:JSON.stringify({approval_status:status})}),
+    approve:(id,status)=>request('/api/admin/users/'+encodeURIComponent(id)+'/approval',{method:'PATCH',body:JSON.stringify({status})}),
     remove:(id)=>request('/api/admin/users/'+encodeURIComponent(id),{method:'DELETE'}),
     courses:()=>request('/api/admin/courses'),
     courseStatus:(id,status)=>request('/api/admin/courses/'+encodeURIComponent(id)+'/status',{method:'PATCH',body:JSON.stringify({status})})
