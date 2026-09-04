@@ -1,54 +1,13 @@
 /* Capacity Connect — backend authentication bridge */
 (function(){
   const API_BASE=window.API_BASE||'https://capacity-connect-backend-9o1f.onrender.com';
-  function store(data){
-    if(data&&data.token)sessionStorage.setItem('token',data.token);
-    if(data&&data.user)sessionStorage.setItem('user',JSON.stringify(data.user));
-  }
-  async function request(path,body){
-    const r=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    let d={};try{d=await r.json()}catch(e){}
-    if(!r.ok)throw new Error(d.error||d.message||'Authentication request failed');
-    return d;
-  }
+  function store(data){if(data&&data.token)sessionStorage.setItem('token',data.token);if(data&&data.user)sessionStorage.setItem('user',JSON.stringify(data.user));}
+  async function request(path,body){const r=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});let d={};try{d=await r.json()}catch(e){}if(!r.ok)throw new Error(d.error||d.message||'Authentication request failed');return d}
   function showMessage(msg){if(typeof toast==='function')toast(msg);else alert(msg)}
-  function dashboard(user){
-    if(!user)return false;
-    if(typeof current!=='undefined'){current.name=user.name||user.email;current.role=String(user.role||'trainee').toLowerCase();current.page='dashboard'}
-    const landing=document.getElementById('landing'),modal=document.getElementById('loginModal'),app=document.getElementById('app');
-    if(landing)landing.classList.add('hidden');
-    if(modal)modal.style.display='none';
-    if(app)app.classList.remove('hidden');
-    if(typeof render==='function')render();
-    return true;
-  }
-  async function backendLogin(){
-    const email=document.getElementById('loginUser').value.trim().toLowerCase(),password=document.getElementById('loginPass').value;
-    if(!email||!password){showMessage('Enter email and password.');return}
-    try{
-      const d=await request('/api/auth/login',{email,password});
-      store(d);dashboard(d.user);showMessage('Login successful.');
-    }catch(e){showMessage(e.message)}
-  }
-  async function backendRegister(){
-    const name=document.getElementById('signupName').value.trim(),email=document.getElementById('signupEmail').value.trim().toLowerCase(),password=document.getElementById('signupPass').value,confirm=document.getElementById('signupConfirm').value,role=document.getElementById('signupRole').value;
-    if(!name||!email||!password||!confirm){showMessage('Fill all fields.');return}
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){showMessage('Enter a valid email address.');return}
-    if(password.length<6){showMessage('Password must be at least 6 characters.');return}
-    if(password!==confirm){showMessage('Passwords do not match.');return}
-    try{
-      const d=await request('/api/auth/register',{name,email,password,role});
-      if(d.token)store(d);
-      showMessage(role==='trainer'?'Account created. Admin approval required.':'Account created. Please login.');
-      document.getElementById('loginUser').value=email;document.getElementById('loginPass').value='';
-      if(typeof showLogin==='function')showLogin();
-    }catch(e){showMessage(e.message)}
-  }
+  function dashboard(user){if(!user)return false;if(typeof current!=='undefined'){current.name=user.name||user.email;current.role=String(user.role||'trainee').toLowerCase();current.page='dashboard'}const landing=document.getElementById('landing'),modal=document.getElementById('loginModal'),app=document.getElementById('app');if(landing)landing.classList.add('hidden');if(modal)modal.style.display='none';if(app)app.classList.remove('hidden');if(typeof render==='function')render();return true}
+  async function backendLogin(){const email=document.getElementById('loginUser').value.trim().toLowerCase(),password=document.getElementById('loginPass').value;if(!email||!password){showMessage('Enter email and password.');return}try{const d=await request('/api/auth/login',{email,password});store(d);dashboard(d.user);showMessage('Login successful.')}catch(e){showMessage(e.message)}}
+  async function backendRegister(){const name=document.getElementById('signupName').value.trim(),email=document.getElementById('signupEmail').value.trim().toLowerCase(),password=document.getElementById('signupPass').value,confirmPassword=document.getElementById('signupConfirm').value,role=document.getElementById('signupRole').value;if(!name||!email||!password||!confirmPassword){showMessage('Fill all fields.');return}if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){showMessage('Enter a valid email address.');return}if(password.length<6){showMessage('Password must be at least 6 characters.');return}if(password!==confirmPassword){showMessage('Passwords do not match.');return}try{const d=await request('/api/auth/register',{name,email,password,confirmPassword,role});if(d.token)store(d);showMessage(role==='trainer'?'Account created. Admin approval required.':'Account created. Please login.');document.getElementById('loginUser').value=email;document.getElementById('loginPass').value='';if(typeof showLogin==='function')showLogin()}catch(e){showMessage(e.message)}}
   window.capacityAuth={login:backendLogin,register:backendRegister};
-  function install(){
-    if(typeof window.doLogin==='function')window.doLogin=backendLogin;
-    if(typeof window.createAccount==='function')window.createAccount=backendRegister;
-    return true;
-  }
+  function install(){if(typeof window.doLogin==='function')window.doLogin=backendLogin;if(typeof window.createAccount==='function')window.createAccount=backendRegister;return true}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 })();
