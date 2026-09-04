@@ -1,6 +1,6 @@
 /* Capacity Connect — deterministic role API/UI bootstrap */
 (function(){
-  const scripts=['platform-integration.js','platform-api.js','role-api-ui.js','certification-ui.js','production-integration.js','live-data-adapter.js','platform-ready.js'];
+  const scripts=['platform-integration.js','platform-api.js','role-api-ui.js','certification-ui.js','production-integration.js','live-data-adapter.js','auth-backend-bridge.js','platform-ready.js'];
   function load(i){
     if(i>=scripts.length)return;
     if(document.querySelector('script[src="'+scripts[i]+'"]'))return load(i+1);
