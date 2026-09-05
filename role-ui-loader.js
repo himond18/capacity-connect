@@ -1,6 +1,4 @@
-/* Capacity Connect — stable integration loader
-   The original single-file app already owns navigation/rendering.
-   Only load backend data/action bridges here; do not stack render/navigation patches. */
+/* Capacity Connect — stable integration loader */
 (function(){
   const scripts=[
     'platform-api.js',
@@ -8,7 +6,8 @@
     'auth-backend-bridge.js',
     'role-api-ui.js',
     'core-flow-bridge.js',
-    'admin-users-fix.js'
+    'admin-users-fix.js',
+    'trainee-courses-final-fix.js'
   ];
   function load(i){
     if(i>=scripts.length)return;
